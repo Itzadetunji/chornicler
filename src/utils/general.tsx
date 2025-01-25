@@ -11,7 +11,6 @@ export const getCollectionIcon = (
 		)
 	);
 
-	console.log(Math.random() * listIcons().length);
 	return matchedIcon
 		? matchedIcon.icon
 		: listIcons(size)[Math.floor(Math.random() * listIcons().length)].icon;

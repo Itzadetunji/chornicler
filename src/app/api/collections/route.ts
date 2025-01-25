@@ -8,13 +8,13 @@ export interface ApiResponse<T> {
 	message: string;
 }
 
-const MONGO_URI = process.env.NEXT_PUBLIC_MONGO_URI || "mongodb://localhost:27017";
+const MONGO_URI = process.env.NEXT_PUBLIC_MONGO_URI;
 const DB_NAME = process.env.NEXT_PUBLIC_MONGO_DB_NAME;
 const COLLECTION_NAME = process.env.NEXT_PUBLIC_MONGO_DB_COLLECTION_NAME ?? "";
 
 // Utility function to connect to MongoDB
 const connectToDatabase = async () => {
-	const client = new MongoClient(MONGO_URI);
+	const client = new MongoClient(MONGO_URI ?? "");
 	await client.connect();
 	const db = client.db(DB_NAME);
 	return { db, client };
