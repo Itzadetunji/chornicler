@@ -2,18 +2,17 @@
 
 import GridCard from "@/components/GridCard";
 import ListCard from "@/components/ListCard";
+import Loader from "@/components/Loader";
+import TableView from "@/components/TableCard";
 import { Button } from "@/components/ui/button";
+import { useAddCollections, useGetCollections } from "@/http/collectionQueries";
 import {
-	collectionData,
 	CollectionType,
 	DisplayEnum,
 	displayVariables,
 } from "@/utils/constants";
 import React from "react";
-import { FaRegCalendarCheck } from "react-icons/fa6";
 import { GoPlus } from "react-icons/go";
-import { IoIosFitness } from "react-icons/io";
-import { LuBriefcaseBusiness, LuCookingPot } from "react-icons/lu";
 import {
 	Select,
 	SelectContent,
@@ -23,13 +22,18 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from "../components/ui/select";
-import TableView from "@/components/TableCard";
+import { NextPage } from "next";
 
-const Home = () => {
+const Home: NextPage = () => {
+	const getCollectionsQuery = useGetCollections();
+	const addCollectionMutation = useAddCollections();
 	const [displayType, setDisplayType] = React.useState<DisplayEnum>("Table");
-	const [collections, setCollections] =
-		React.useState<CollectionType[]>(collectionData);
-	console.log(displayType);
+	const [collections, setCollections] = React.useState<CollectionType[]>([]);
+
+	React.useEffect(() => {
+		if (getCollectionsQuery.data && getCollectionsQuery.isSuccess)
+			setCollections(getCollectionsQuery.data?.data || []);
+	}, [getCollectionsQuery.data]);
 	return (
 		<main className="px-4 bg-white flex flex-col gap-6">
 			<div>
@@ -64,55 +68,46 @@ const Home = () => {
 						</SelectContent>
 					</Select>
 					<Button
-						onClick={() =>
-							setCollections((prevData) => [
-								...prevData,
-								{
-									name: "New Collection",
-									description: new Date().getTime(),
-									docs: "0",
-								},
-							])
-						}
+						onClick={() => {
+							addCollectionMutation.mutate();
+						}}
+						disabled={addCollectionMutation.isPending}
 					>
 						<GoPlus size={24} />
 						<p>Add New Collection</p>
 					</Button>
 				</div>
-				{displayType === "List" && (
-					<div className="flex flex-col items-stretch gap-3">
-						{collections.map((collection, idx) => (
-							<ListCard
-								key={idx}
-								collection={collection}
-							/>
-						))}
-					</div>
+
+				{getCollectionsQuery.isPending ? (
+					<Loader size={24} />
+				) : (
+					<>
+						{displayType === "List" && (
+							<div className="flex flex-col items-stretch gap-3">
+								{collections.map((collection, idx) => (
+									<ListCard
+										key={idx}
+										collection={collection}
+									/>
+								))}
+							</div>
+						)}
+						{displayType === "Grid" && (
+							<div className="grid grid-cols-2 place-content-stretch gap-3">
+								{collections.map((collection, idx) => (
+									<GridCard
+										key={idx}
+										collection={collection}
+									/>
+								))}
+							</div>
+						)}
+						{displayType === "Table" && <TableView collections={collections} />}
+					</>
 				)}
-				{displayType === "Grid" && (
-					<div className="grid grid-cols-2 place-content-stretch gap-3">
-						{collections.map((collection, idx) => (
-							<GridCard
-								key={idx}
-								collection={collection}
-							/>
-						))}
-					</div>
-				)}
-				{displayType === "Table" && <TableView collections={collections} />}
 			</section>
 		</main>
 	);
 };
-
-export const listIcons = (size?: number) => [
-	{
-		name: ["Recipes", "Cooking dinner"],
-		icon: <LuCookingPot size={size ?? 24} />,
-	},
-	{ name: ["Meal Planning"], icon: <FaRegCalendarCheck size={size ?? 24} /> },
-	{ name: ["Work Projects"], icon: <LuBriefcaseBusiness size={size ?? 24} /> },
-	{ name: ["Fitness Goals"], icon: <IoIosFitness size={size ?? 24} /> },
-];
 
 export default Home;

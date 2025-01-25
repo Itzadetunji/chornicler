@@ -4,12 +4,12 @@ import { format } from "date-fns";
 import React from "react";
 import { VscChevronRight } from "react-icons/vsc";
 import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
+	Table,
+	TableBody,
+	TableCell,
+	TableHead,
+	TableHeader,
+	TableRow,
 } from "../components/ui/table";
 import { Button } from "./ui/button";
 
@@ -41,7 +41,7 @@ const TableView: React.FC<{ collections: CollectionType[] }> = ({
 						<TableCell className="font-medium text-slate-600 p-1.5 text-xs">
 							Today{" "}
 							<p className="lowercase">
-								{format(new Date(collection.description), "h:mma")}
+								{format(new Date(collection.time_created), "h:mma")}
 							</p>
 						</TableCell>
 						<TableCell className="font-medium p-1.5">

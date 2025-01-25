@@ -1,6 +1,5 @@
-import { listIcons } from "@/app/page";
+import listIcons from "@/components/ListIcons";
 import { ReactNode } from "react";
-import { FaRegCalendarCheck } from "react-icons/fa6";
 
 export const getCollectionIcon = (
 	collectionName: string,
@@ -12,5 +11,8 @@ export const getCollectionIcon = (
 		)
 	);
 
-	return matchedIcon ? matchedIcon.icon : <FaRegCalendarCheck size={24} />;
+	console.log(Math.random() * listIcons().length);
+	return matchedIcon
+		? matchedIcon.icon
+		: listIcons(size)[Math.floor(Math.random() * listIcons().length)].icon;
 };
