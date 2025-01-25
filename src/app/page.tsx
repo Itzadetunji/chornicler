@@ -27,7 +27,7 @@ import { NextPage } from "next";
 const Home: NextPage = () => {
 	const getCollectionsQuery = useGetCollections();
 	const addCollectionMutation = useAddCollections();
-	const [displayType, setDisplayType] = React.useState<DisplayEnum>("Table");
+	const [displayType, setDisplayType] = React.useState<DisplayEnum>("List");
 	const [collections, setCollections] = React.useState<CollectionType[]>([]);
 
 	React.useEffect(() => {
